@@ -1,0 +1,16 @@
+---
+- name: Install MSI on Windows servers
+  hosts: windows
+  gather_facts: no
+
+  tasks:
+    - name: Copy MSI file to remote server
+      ansible.windows.win_copy:
+        src: /path/to/application.msi
+        dest: C:\Temp\application.msi
+
+    - name: Install MSI package
+      ansible.windows.win_package:
+        path: C:\Temp\application.msi
+        state: present
+        arguments: /quiet /norestart
