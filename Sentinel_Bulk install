@@ -1,0 +1,42 @@
+---
+- name: Install SentinelOne Agent
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Download SentinelOne Windows Agent
+      ansible.windows.win_get_url:
+        url: "https://server.example.com/SentinelOneInstaller.msi"
+        dest: "C:\\Temp\\SentinelOneInstaller.msi"
+      when: ansible_os_family == "Windows"
+
+    - name: Install SentinelOne Windows Agent
+      ansible.windows.win_package:
+        path: "C:\\Temp\\SentinelOneInstaller.msi"
+        arguments: "/quiet SITE_TOKEN=<SITE_TOKEN>"
+        state: present
+      when: ansible_os_family == "Windows"
+
+    - name: Download SentinelOne Linux Agent
+      get_url:
+        url: "https://server.example.com/sentinelone-agent.rpm"
+        dest: "/tmp/sentinelone-agent.rpm"
+      when: ansible_os_family == "RedHat"
+
+    - name: Install SentinelOne Linux Agent
+      package:
+        name: "/tmp/sentinelone-agent.rpm"
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Download SentinelOne Ubuntu Agent
+      get_url:
+        url: "https://server.example.com/sentinelone-agent.deb"
+        dest: "/tmp/sentinelone-agent.deb"
+      when: ansible_os_family == "Debian"
+
+    - name: Install SentinelOne Ubuntu Agent
+      apt:
+        deb: "/tmp/sentinelone-agent.deb"
+      when: ansible_os_family == "Debian"
